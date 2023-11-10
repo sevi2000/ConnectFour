@@ -7,13 +7,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class Field extends Actor {
     int width,height;
     Player[][] elements;
     private ShapeDrawer sd;
-
+    int transparentPosX = -1;
+    int transparentPosY = -1;
     Field(int width, int height){
         this.width = width;
         this.height = height;
@@ -24,6 +26,9 @@ public class Field extends Actor {
                 elements[i][j] = Player.BLANK;
             }
         }
+        addListener(new ClickListener(){
+
+        });
     }
 
     private int getMaxRadius(int width, int height) {
@@ -32,6 +37,7 @@ public class Field extends Actor {
 
     @Override
     public void draw(Batch batch,float alpha){
+        update();
         System.out.printf("widh : %f height : %f\n",getWidth(),getHeight());
         if (sd == null)
             sd = getShapeDrawer(batch);
@@ -52,6 +58,7 @@ public class Field extends Actor {
                 sd.filledCircle(getX()+ i *radius*2+radius,getY()+j*radius*2+radius,radius,c);
             }
         }
+        sd.filledCircle(transparentPosX,transparentPosY,radius,new Color(1,1,1,(float) 0.5));
     }
     public ShapeDrawer getShapeDrawer(Batch batch) {
         if (sd == null) {
@@ -64,5 +71,10 @@ public class Field extends Actor {
             sd = new ShapeDrawer(batch, region);
         }
         return sd;
+    }
+
+    public void update(){
+       transparentPosX = Gdx.input.getX();
+        transparentPosY = 440;
     }
 }
