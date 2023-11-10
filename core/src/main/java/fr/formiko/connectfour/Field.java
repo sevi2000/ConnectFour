@@ -11,43 +11,45 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class Field extends Actor {
-    int width,height;
+    int width, height;
     Player[][] elements;
     private ShapeDrawer sd;
     int transparentPosX = -1;
     int transparentPosY = -1;
-    Field(int width, int height){
+
+    Field(int width, int height) {
         this.width = width;
         this.height = height;
-        setSize(width * getMaxRadius(width,height), height* getMaxRadius(width,height));
+        setSize(width * getMaxRadius(width, height), height * getMaxRadius(width, height));
         elements = new Player[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 elements[i][j] = Player.BLANK;
             }
         }
-        addListener(new ClickListener(){
+        addListener(new ClickListener() {
 
         });
     }
 
     private int getMaxRadius(int width, int height) {
-        return Math.min(Gdx.graphics.getWidth() / width, Gdx.graphics.getHeight() / height)/2;
+        return Math.min(Gdx.graphics.getWidth() / width, Gdx.graphics.getHeight() / (height + 1)) / 2;
     }
 
     @Override
-    public void draw(Batch batch,float alpha){
+    public void draw(Batch batch, float alpha) {
         update();
-        System.out.printf("widh : %f height : %f\n",getWidth(),getHeight());
+        System.out.printf("widh : %f height : %f\n", getWidth(), getHeight());
         if (sd == null)
             sd = getShapeDrawer(batch);
         sd.setColor(Color.YELLOW);
-        int radius = getMaxRadius(width,height);
-        System.out.printf("radius : %d\n",radius);
-        setSize(width * radius*2, height * radius * 2);
-        setPosition((Gdx.graphics.getWidth()-getWidth())/2,(Gdx.graphics.getHeight()-getHeight())/2);
-        sd.filledRectangle(getX(),getY(),getWidth(),getHeight());
-        for (int i = 0; i < width;i++) {
+        int radius = getMaxRadius(width, height);
+        System.out.printf("radius : %d\n", radius);
+        setSize(width * radius * 2, height * radius * 2);
+        setPosition((Gdx.graphics.getWidth() - getWidth()) / 2,
+                (Gdx.graphics.getHeight() - getHeight() - (radius * 2)) / 2);
+        sd.filledRectangle(getX(), getY(), getWidth(), getHeight());
+        for (int i = 0; i < width; i++) {
             System.out.println(i);
             for (int j = 0; j < height; j++) {
                 Color c = Color.BLACK;
@@ -55,11 +57,12 @@ public class Field extends Actor {
                     c = Color.BLUE;
                 else if (elements[i][j] == Player.RED)
                     c = Color.RED;
-                sd.filledCircle(getX()+ i *radius*2+radius,getY()+j*radius*2+radius,radius,c);
+                sd.filledCircle(getX() + i * radius * 2 + radius, getY() + j * radius * 2 + radius, radius, c);
             }
         }
-        sd.filledCircle(transparentPosX,transparentPosY,radius,new Color(1,1,1,(float) 0.5));
+        sd.filledCircle(transparentPosX, transparentPosY, radius, new Color(1, 1, 1, (float) 0.5));
     }
+
     public ShapeDrawer getShapeDrawer(Batch batch) {
         if (sd == null) {
             Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -73,8 +76,8 @@ public class Field extends Actor {
         return sd;
     }
 
-    public void update(){
-       transparentPosX = Gdx.input.getX();
+    public void update() {
+        transparentPosX = Gdx.input.getX();
         transparentPosY = 440;
     }
 }
