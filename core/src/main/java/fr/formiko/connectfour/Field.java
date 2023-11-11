@@ -19,6 +19,7 @@ public class Field extends Actor {
     int transparentPosY = -1;
 
     Player currentPlayer = Player.BLUE;
+    Win victory = null;
     Field(int width, int height) {
         this.width = width;
         this.height = height;
@@ -33,9 +34,11 @@ public class Field extends Actor {
             public void clicked(InputEvent event, float x, float y){
                 int col = (int)x/getMaxRadius(width,height)/2;
                 System.out.println("width  = "+width+"height = "+height);
-                play(col);
-                currentPlayer = currentPlayer.switchPlayer();
-                if (checkVertical() || checkHorizontal()|| checkDiagonals())
+                if (!won()){
+                    play(col);
+                    currentPlayer = currentPlayer.switchPlayer();
+                }
+                if (won())
                   System.out.println("won");
             }
         });
@@ -68,6 +71,43 @@ public class Field extends Actor {
         }
         Color c = currentPlayer == Player.BLUE ? new Color(0,0,1,(float) 0.5):new Color(1,0,0,(float)0.5);
         sd.filledCircle(transparentPosX, transparentPosY, radius, c);
+        if (victory != null){
+            switch (victory.type){
+
+                case VERTICAL -> {
+
+                    sd.setDefaultLineWidth(5);
+                    sd.setColor(Color.GREEN);
+                    for (int i = 0; i < 4; i++) {
+                        sd.circle(getX() + victory.col * radius * 2 + radius, getY() + (victory.row + i) * radius * 2 + radius, radius);
+                    }
+
+                }
+                case HORIZONTAL -> {
+
+                    sd.setDefaultLineWidth(5);
+                    sd.setColor(Color.GREEN);
+                    for (int i = 0; i < 4; i++) {
+                        sd.circle(getX() + (victory.col + i) * radius * 2 + radius, getY() + victory.row * radius * 2 + radius, radius);
+                    }
+
+                }
+                case SWDIAG -> {
+                    sd.setDefaultLineWidth(5);
+                    sd.setColor(Color.GREEN);
+                    for (int i = 0; i < 4; i++) {
+                        sd.circle(getX() + (victory.col + i) * radius * 2 + radius, getY() + (victory.row + i) * radius * 2 + radius, radius);
+                    }
+                }
+                case NWDIAG -> {
+                    sd.setDefaultLineWidth(5);
+                    sd.setColor(Color.GREEN);
+                    for (int i = 0; i < 4; i++) {
+                        sd.circle(getX() + (victory.col + i) * radius * 2 + radius, getY() + (victory.row - i) * radius * 2 + radius, radius);
+                    }
+                }
+            }
+        }
     }
 
     public ShapeDrawer getShapeDrawer(Batch batch) {
@@ -100,40 +140,43 @@ public class Field extends Actor {
 
 
     // Function to check for horizontal victory
-     boolean checkHorizontal() {
+    Win checkHorizontal() {
          for (int j = 0; j < height; j++) {
              for (int i = 0; i < width-3; i++) {
                  if (elements[i][j] != Player.BLANK && elements[i][j] == elements[i + 1][j] &&
                      elements[i+1][j] == elements[i + 2][j] &&
                      elements[i+2][j] == elements[i + 3][j])
-                     return true;
+                     return new Win(Win.Type.HORIZONTAL,i,j);
              }
          }
 
-         return false;
+         return null;
     }
 
-    boolean checkVertical() {
+    Win checkVertical() {
         for (int j = 0; j < height-3; j++) {
             for (int i = 0; i < width; i++) {
                 if (elements[i][j] != Player.BLANK && elements[i][j] == elements[i][j + 1] &&
                     elements[i][j + 1] == elements[i][j + 2] &&
                     elements[i][j + 2] == elements[i][j + 3])
-                    return true;
+                    return new Win(Win.Type.VERTICAL,i,j);
             }
         }
 
-        return false;
+        return null;
     }
 
-    boolean checkDiagonals() {
+    Win checkDiagonals() {
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
-                if (f(col,row) || f2(col,row))
-                    return true;
+                if (f(col,row) )
+                    return new Win(Win.Type.SWDIAG,col,row);
+                if (f2(col,row))
+                    return new Win(Win.Type.NWDIAG,col,row);
+
             }
         }
-        return false;
+        return null;
     }
 
     boolean f(int col, int row) {
@@ -152,5 +195,16 @@ public class Field extends Actor {
             elements[col][row] == elements[col + 1][row - 1] &&
             elements[col + 1][row - 1] == elements[col + 2][row - 2] &&
             elements[col +2][row - 2] == elements[col + 3][row - 3];
+    }
+
+    boolean won(){
+        System.out.println(victory);
+        if (checkVertical() != null)
+            victory = checkVertical();
+        else if (checkHorizontal() != null)
+            victory = checkHorizontal();
+        else if (checkDiagonals() != null)
+            victory = checkDiagonals();
+        return victory != null;
     }
 }
