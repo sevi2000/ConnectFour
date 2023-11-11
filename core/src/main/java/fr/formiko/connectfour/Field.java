@@ -32,8 +32,11 @@ public class Field extends Actor {
         addListener( new ClickListener(){
             public void clicked(InputEvent event, float x, float y){
                 int col = (int)x/getMaxRadius(width,height)/2;
+                System.out.println("width  = "+width+"height = "+height);
                 play(col);
                 currentPlayer = currentPlayer.switchPlayer();
+                if (checkVertical() || checkHorizontal()|| checkDiagonals())
+                  System.out.println("won");
             }
         });
     }
@@ -93,5 +96,61 @@ public class Field extends Actor {
         while (i < height-1 && elements[col][i] != Player.BLANK)
             i++;
         elements[col][i] = currentPlayer;
+    }
+
+
+    // Function to check for horizontal victory
+     boolean checkHorizontal() {
+         for (int j = 0; j < height; j++) {
+             for (int i = 0; i < width-3; i++) {
+                 if (elements[i][j] != Player.BLANK && elements[i][j] == elements[i + 1][j] &&
+                     elements[i+1][j] == elements[i + 2][j] &&
+                     elements[i+2][j] == elements[i + 3][j])
+                     return true;
+             }
+         }
+
+         return false;
+    }
+
+    boolean checkVertical() {
+        for (int j = 0; j < height-3; j++) {
+            for (int i = 0; i < width; i++) {
+                if (elements[i][j] != Player.BLANK && elements[i][j] == elements[i][j + 1] &&
+                    elements[i][j + 1] == elements[i][j + 2] &&
+                    elements[i][j + 2] == elements[i][j + 3])
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    boolean checkDiagonals() {
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                if (f(col,row) || f2(col,row))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    boolean f(int col, int row) {
+        if (col +3 >= width || row + 3 >= height)
+            return false;
+        return elements[col][row] != Player.BLANK &&
+            elements[col][row] == elements[col + 1][row + 1] &&
+            elements[col + 1][row + 1] == elements[col + 2][row + 2] &&
+            elements[col +2][row + 2] == elements[col + 3][row + 3];
+    }
+
+    boolean f2(int col, int row) {
+        if (col +3 >= width || row - 3 < 0)
+            return false;
+        return elements[col][row] != Player.BLANK &&
+            elements[col][row] == elements[col + 1][row - 1] &&
+            elements[col + 1][row - 1] == elements[col + 2][row - 2] &&
+            elements[col +2][row - 2] == elements[col + 3][row - 3];
     }
 }
