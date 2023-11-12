@@ -124,8 +124,10 @@ public class Field extends Actor {
     }
 
     public void update() {
-        if (Gdx.input.getX() < getX())
-        transparentPosX = (int)getX();
+        if (Gdx.input.getX() < (int)getX() + getMaxRadius(width,height))
+            transparentPosX = (int)getX() + getMaxRadius(width,height);
+        else if(Gdx.input.getX() > getMaxRadius(width,height)*(width+1)*2)
+            transparentPosX = getMaxRadius(width,height)*2*(width+1);
         else
             transparentPosX = Gdx.input.getX();
         transparentPosY = 445;
