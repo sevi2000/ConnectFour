@@ -10,10 +10,10 @@ env:
   JAVA_DISTRIBUTION: 'temurin'
   JRE_VERSION: '18.0.8f'
   GITHUB_TOKEN: ${{ github.token }}
-  ARTIFACT_NAME: 'LauncherJarExample'
-  USER_NAME: 'Sese'
+  ARTIFACT_NAME: 'ConnecFour'
+  USER_NAME: 'Sese2000'
   USER_EMAIL: 'sevidervishi@outlook.fr'
-  UUID: 'e1caab6b-1230-4691-a880-dd2d0b8ebb98'
+  UUID: '7690d31e-8154-11ee-b962-0242ac120002'
 
 jobs:
   releaseJob:
