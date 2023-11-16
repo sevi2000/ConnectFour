@@ -26,7 +26,7 @@ gwt {
   //// The next line can be useful to uncomment if you want output that hasn't been obfuscated.
 //  compiler.style = org.docstr.gradle.plugins.gwt.Style.DETAILED
 
-  sourceLevel = 1.11
+  sourceLevel = 18
 }
 
 dependencies {
@@ -146,8 +146,8 @@ tasks.compileGwt.dependsOn(addSource)
 tasks.draftCompileGwt.dependsOn(addSource)
 tasks.checkGwt.dependsOn(addSource)
 
-java.sourceCompatibility = JavaVersion.VERSION_11
-java.targetCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_18
+java.targetCompatibility = JavaVersion.VERSION_18
 sourceSets.main.java.srcDirs = [ "src/main/java/" ]
 
 eclipse.project.name = appName + "-html"
