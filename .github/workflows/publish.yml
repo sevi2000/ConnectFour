@@ -49,7 +49,10 @@ jobs:
         echo "Build and move to root with desired name"
         chmod 777 gradlew
         ./gradlew jar -Pversion='${{ steps.version.outputs.content }}'
-        mv build/libs/*.jar ${{ env.ARTIFACT_NAME }}.jar
+        # For liftoff project
+        mv lwjgl3/build/lib/*.jar ${{ env.ARTIFACT_NAME }}.jar
+        # For default libgdx project
+        # mv desktop/build/libs/*.jar ${{ env.ARTIFACT_NAME }}.jar
         ls
 
     - name: release
